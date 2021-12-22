@@ -38,25 +38,19 @@ class LoanCalculator:
 
     def get_annuity_payments(self):
         if not self.periods:  # periods parameter missing, calculating it here
-            n = self.periods_calculation()
-            if n < 12:
-                print('It will take {} months to repay this loan!'.format(n))
-            elif n % 12 == 0:
-                if n == 12:
-                    print('It will take 1 year to repay this loan!')
-                else:
-                    print('It will take {} years to repay this loan!'.format(math.ceil(n / 12)))
-                    print(f'Overpayment = {self.annuity_overpayment_value(n)}')
-            elif int(n) > 12:
-                y = int(n / 12)
-                m = round(int(n % 12))
+            self.periods = self.periods_calculation()
+            if self.periods < 12:
+                print('It will take {} months to repay this loan!'.format(self.periods))
+            elif self.periods % 12 == 0:
+                print('It will take 1 year to repay this loan!' if self.periods == 12 else 'It will take {} years to repay this loan!\nOverpayment = {}'.format(math.ceil(self.periods / 12),                                                                                                                              self.annuity_overpayment_value(self.periods)))
+            elif int(self.periods) > 12:
+                y, m = int(self.periods / 12), round(int(self.periods % 12))
                 print('It will take {} years and {}'' months' if m != 1 else ' month',
                       'to repay this loan!'.format(y, m))
         elif not self.monthly_payment:  # annuity parameter missing, calculating it here
-            a = self.annuity_calculation()
+            self.monthly_payment = self.annuity_calculation()
             print("Your monthly payment = {}!".format(
-                math.ceil(a)))  # here we can add code if the last payment is not equal to the regular
-
+                math.ceil(self.monthly_payment)))  # here we can add code if the last payment is not equal to the regular
         elif not self.principal:  # # principal parameter missing, calculating it here
             p = self.principal_calculation()
             print(f'Your loan principal = {p}!')
@@ -94,8 +88,7 @@ def main():
             args.principal and int(args.principal) < 0,
             args.periods and int(args.periods) < 0,
             args.interest and int(args.interest) < 0,
-            args.payment and int(args.payment) < 0
-            ]
+            args.payment and int(args.payment) < 0]
            ):
         print("Incorrect parameters")
         exit()
